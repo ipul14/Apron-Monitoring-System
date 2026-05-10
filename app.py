@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 
 st.set_page_config(
     page_title="Apron Monitoring System",
@@ -11,21 +12,17 @@ st.caption("Weda Bay Airport • PT. Indonesia WedaBay Industrial Park")
 
 html_path = "apron/apron_system.html"
 
-if st.button("🔄 Refresh / Load Ulang"):
-    st.rerun()
-
-if st.checkbox("Tampilkan HTML", value=True):
-    try:
-        with open(html_path, "r", encoding="utf-8") as f:
-            html_content = f.read()
-        
-        st.components.v1.html(
-            html_content, 
-            height=1600,      # Naikkan tinggi
-            scrolling=True,
-            width=None
-        )
-    except Exception as e:
-        st.error(f"Error: {e}")
+if os.path.exists(html_path):
+    # Baca file sebagai raw HTML
+    with open(html_path, "r", encoding="utf-8") as f:
+        html_content = f.read()
+    
+    # Tampilkan menggunakan iframe (lebih stabil untuk HTML besar)
+    st.components.v1.iframe(
+        srcdoc=html_content,
+        height=1600,
+        scrolling=True
+    )
 else:
-    st.info("Centang kotak di atas untuk menampilkan sistem")
+    st.error("File HTML tidak ditemukan")
+    st.write("Path:", html_path)
